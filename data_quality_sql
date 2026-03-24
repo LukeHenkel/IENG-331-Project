@@ -1,0 +1,1 @@
+-- This is a data quality audit that profiles row counts per table, NULL rates for key columns, orphaned foreigh keys, data range coverage and gaps, and duplicate counts
