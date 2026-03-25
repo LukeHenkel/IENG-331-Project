@@ -41,3 +41,14 @@ FROM second_orders
 GROUP BY DATE_TRUNC('month',first_order_ts)
 )
 
+SELECT
+cohort_month,
+cohort_size,
+retained_30d,
+ROUND(100.0*retained_30d / cohort_size, 2) AS retained_30d_pct,
+retained_60d,
+ROUND(100.0*retained_60d / cohort_size, 2) AS retained_60d_pct,
+retained_90d,
+ROUND(100.0*retained_90d / cohort_size, 2) AS retained_90d_pct
+FROM cohort_retention
+ORDER BY cohort_month;
