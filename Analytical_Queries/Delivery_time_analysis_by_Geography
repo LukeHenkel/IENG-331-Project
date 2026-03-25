@@ -39,3 +39,12 @@ state_summary AS (
     )
 
 SELECT
+    customer_state,
+    delivered_orders,
+    avg_actual_delivery_days,
+    avg_estimated_delivery_days,
+    avg_delay_days,
+    late_order_rate_pct
+FROM state_summary
+WHERE delivered_orders>=100
+ORDER BY avg_delay_days DESC, late_order_rate_pct DESC;
