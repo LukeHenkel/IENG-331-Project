@@ -54,3 +54,38 @@ seller_cancellations AS (
     ON oi.order_id = o.order_id
     GROUP BY oi.seller_id
     ),
+
+seller_scorecard AS (
+    SELECT
+        sr.seller.id,
+        sr.delivered_orders,
+        ROUND(sr.gross_revenue,2) AS gross_revenue,
+        ROUND(100.0*sd.on_time_items / sd.delivered_items,2) AS on_time_rate_pct,
+        ROUND(srv.avg_review_score,2) AS avg_review_score,
+        ROUND(100.0*sc.bad_orders / sc.total_orders,2) AS bad_order_rate_pct
+    FROM seller_revenue sr
+    JOIN seller_delivery sd
+    ON sr.seller_id = sd.seller_id
+    JOIN seller_reviews srv
+    ON sr.seller_id = srv.seller_id
+    JOIN seller_cancellations sc
+    on sr.seller_id = sc.seller_id
+    WHERE sr.delivered_orders>=10
+    )
+
+SELECT
+    seller_id,
+    delivered_orders,
+    gross_revenue,
+    on_time_rate_pct,
+    avg_review_score,
+    bad_order_rate_pct,
+    RANK()OVER(
+    ORDER BY gross_revenue DESC,
+    on_time_rate_pct DESC,
+    avg_review_score DESC,
+    bad_order_rate_pct ASC
+    ) AS seller_rank
+FROM seller_scorecard
+ORDER BY seller_rank
+LIMIT 25;
