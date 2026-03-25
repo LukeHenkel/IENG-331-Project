@@ -83,3 +83,13 @@ FROM monthly_gaps
 WHERE month_gap IS NOT NULL
   AND month_gap > 1
 ORDER BY order_month;
+
+WITH duplicates AS (
+    SELECT
+        customer_id,
+        COUNT(*) AS count
+    FROM customers
+    GROUP BY customer_id
+    HAVING COUNT(*) > 1
+)
+SELECT * FROM duplicates;
