@@ -41,3 +41,20 @@ WITH orphaned_keys AS (
       AND c.customer_id IS NULL
 )
 SELECT * FROM orphaned_keys;
+
+WITH date_ranges AS (
+    SELECT
+        'orders.order_purchase_timestamp' AS date_field,
+        MIN(order_purchase_timestamp) AS min_date,
+        MAX(order_purchase_timestamp) AS max_date
+    FROM orders
+
+    UNION ALL
+
+    SELECT
+        'orders.order_approved_at',
+        MIN(order_approved_at),
+        MAX(order_approved_at)
+    FROM orders
+)
+SELECT * FROM date_ranges;
