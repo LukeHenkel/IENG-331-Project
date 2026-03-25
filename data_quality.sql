@@ -29,3 +29,15 @@ WITH null_rates AS (
     FROM customers
 )
 SELECT * FROM null_rates;
+
+WITH orphaned_keys AS (
+    SELECT
+        'orders.customer_id -> customers.customer_id' AS relationship,
+        COUNT(*) AS orphan_count
+    FROM orders o
+    LEFT JOIN customers c
+        ON o.customer_id = c.customer_id
+    WHERE o.customer_id IS NOT NULL
+      AND c.customer_id IS NULL
+)
+SELECT * FROM orphaned_keys;
