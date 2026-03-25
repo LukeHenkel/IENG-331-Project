@@ -30,3 +30,14 @@ AND d.order_purchase_timestamp > f.first_order_ts
 GROUP BY f.customer_id, f.first_order_ts
 ),
 
+cohort_retention AS(
+SELECT
+DATE_TRUNC('month',first_order_ts) AS cohort_month,
+COUNT(*) AS cohort_size,
+SUM(CASE WHEN DATE_DIFF('day',first_order_ts,second_order_ts)<= 30 THEN 1 ELSE 0) AS retained_30d,
+SUM(CASE WHEN DATE_DIFF('day',first_order_ts,second_order_ts)<=60 THEN 1 ELSE 0) AS retained_60d,
+SUM(CASE WHEN DATE_DIFF('day',first_order_ts,second_order_ts)<=90 THEN 1 ELSE 0) AS retained_90d
+FROM second_orders
+GROUP BY DATE_TRUNC('month',first_order_ts)
+)
+
