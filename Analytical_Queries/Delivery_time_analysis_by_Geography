@@ -13,3 +13,12 @@ AND order_purchase_timestamp IS NOT NULL
 AND order_delivered_customer_date IS NOT NULL
 AND order_estimated_customer_date IS NOT NULL
 ),
+
+delivery_metrics AS (
+    SELECT
+        c.customer_state,
+        d.order_id,
+        DATE_DIFF('day',d.order_purchase_timestamp,d.order_delivered_customer_date) AS actual_delivery_days,
+        DATE_DIFF('day',d.order_purchase_timestamp,d.order_estimated_customer_date_customer_date) AS estimated_delivery_days,
+        DATE DIFF('day', d.order_estimated_delivery_date,d.order_delivered_customer_date) AS delay_days
+FROM 
