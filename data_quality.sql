@@ -58,3 +58,28 @@ WITH date_ranges AS (
     FROM orders
 )
 SELECT * FROM date_ranges;
+
+WITH monthly_orders AS (
+    SELECT
+        DATE_TRUNC('month', order_purchase_timestamp) AS order_month,
+        COUNT(*) AS order_count
+    FROM orders
+    WHERE order_purchase_timestamp IS NOT NULL
+    GROUP BY 1
+),
+monthly_gaps AS (
+    SELECT
+        order_month,
+        order_count,
+        LAG(order_month) OVER (ORDER BY order_month) AS previous_month,
+        DATE_DIFF('month',
+            LAG(order_month) OVER (ORDER BY order_month),
+            order_month
+        ) AS month_gap
+    FROM monthly_orders
+)
+SELECT *
+FROM monthly_gaps
+WHERE month_gap IS NOT NULL
+  AND month_gap > 1
+ORDER BY order_month;
