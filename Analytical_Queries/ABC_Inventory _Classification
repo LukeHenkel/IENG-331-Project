@@ -2,8 +2,6 @@
 WITH item_revenue AS (
     SELECT
         COALESCE(p.product_category_name, 'Unknown') AS product_category,
-        oi.order_id,
-        oi.product_id,
         (oi.price + oi.freight_value) AS item_revenue
     FROM order_items AS oi
     JOIN orders AS o
@@ -11,7 +9,16 @@ WITH item_revenue AS (
     JOIN products AS p
         ON oi.product_id = p.product_id
     WHERE o.order_status = 'delivered'
+),
+
+category_revenue AS (
+    SELECT
+        product_category,
+        SUM(item_revenue) AS total_revenue
+    FROM item_revenue
+    GROUP BY product_category
 )
 
 SELECT *
-FROM item_revenue;
+FROM category_revenue
+ORDER BY total_revenue DESC;
