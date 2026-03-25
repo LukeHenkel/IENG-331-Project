@@ -1,0 +1,14 @@
+--Rank sellers by a composite score combining rev-enue, on-time delivery rate, average review score, and return/cancellation rate
+
+WITH seller_revenue AS(
+SELECT
+oi.seller_id,
+COUNT(DISTINCT oi.order_id) AS delivered_orders,
+SUM(oi.price + oi.freight_value) AS gross_revenue
+FROM order_items oi
+JOIN orders o
+ON oi.order_id = o.order_id
+WHERE o.order_status = 'delivered'
+GROUP BY oi.seller_id
+),
+
