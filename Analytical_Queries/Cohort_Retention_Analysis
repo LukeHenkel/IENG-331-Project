@@ -18,3 +18,15 @@ FROM delivered_orders
 GROUP BY customer_id
 ),
 
+second_orders AS(
+SELECT
+f.customer_id,
+f.first_order_ts,
+MIN(d.order_purchase_timestamp) AS second_order_ts
+FROM first_orders f
+LEFT JOIN delivered_orders d
+ON f.customer_id = d.customer_id
+AND d.order_purchase_timestamp > f.first_order_ts
+GROUP BY f.customer_id, f.first_order_ts
+),
+
