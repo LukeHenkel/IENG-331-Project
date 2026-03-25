@@ -1,7 +1,20 @@
 -- Percent of each cohort placed a second order within 30, 60, 90 days
 
-WHEN first_purchase AS (
+WITH delivered_orders AS(
 SELECT
-customer_id
-MIN(order_purchase_timestamp) AS first_order_date
-FROM orders
+order_id,
+customer_id,
+order_purchase_timestamp
+FROM delivered_orders
+WHERE order_status = 'delivered'
+AND order_purchase_timestamp IS NOT NULL
+),
+
+first_orders AS(
+SELECT
+customer_id,
+MIN(order_purchase_timestamp) AS first_order_ts
+FROM delivered_orders
+GROUP BY customer_id
+),
+
