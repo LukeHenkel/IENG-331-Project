@@ -14,13 +14,13 @@ GROUP BY oi.seller_id
 
 seller_delivery AS (
     SELECT
-    oi.seller_id,
-    COUNT(*) AS delivered_items,
-    SUM(
-    CASE
-    WHEN o.order_delivered_customer_date <= o.order_estimated_delivery_date
-    THEN 1 ELSE 0
-    END
+        oi.seller_id,
+        COUNT(*) AS delivered_items,
+        SUM(
+        CASE
+            WHEN o.order_delivered_customer_date <= o.order_estimated_delivery_date
+            THEN 1 ELSE 0
+        END
     ) AS on_time_items
     FROM order_items oi
     JOIN orders o
