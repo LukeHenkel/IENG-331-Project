@@ -21,4 +21,21 @@ delivery_metrics AS (
         DATE_DIFF('day',d.order_purchase_timestamp,d.order_delivered_customer_date) AS actual_delivery_days,
         DATE_DIFF('day',d.order_purchase_timestamp,d.order_estimated_customer_date_customer_date) AS estimated_delivery_days,
         DATE DIFF('day', d.order_estimated_delivery_date,d.order_delivered_customer_date) AS delay_days
-FROM 
+FROM delivered_orders d
+JOIN customers c
+ON d.customer_id = c.customer_id
+),
+
+state_summary AS (
+    SELECT
+        customer_state,
+        COUNT(*) AS delivered_orders,
+        ROUND(AVG(actual_delivery_days),2) AS avg_actual_delivery_days,
+        ROUND(AVG(estimated_delivery_days),2) AS avg_estimated_delivery_days,
+        ROUND(AVG(delay_days),2) AS avg_delay_days,
+        ROUND(100.0*AVG(CASE WHEN delay_days>0 THEN 1 ELSE 0 END),2) AS late_order_rate_pct
+    FROM delivery_metrics
+    GROUP BY customer_state
+    )
+
+SELECT
