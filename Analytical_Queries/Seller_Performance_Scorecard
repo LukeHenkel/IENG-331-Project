@@ -43,3 +43,14 @@ seller_reviews AS(
     WHERE o.order_status = 'delivered'
     GROUP BY oi.seller_id
     ),
+
+seller_cancellations AS (
+    SELECT
+        oi.seller_id,
+        COUNT(DISTINCT oi.order_id) AS total_orders,
+        COUNT(DISTINCT CASE WHEN o.order_status IN('canceled','unavailable') THEN oi.order_id END) AS bad_orders
+    FROM order_items oi
+    JOIN orders o
+    ON oi.order_id = o.order_id
+    GROUP BY oi.seller_id
+    ),
