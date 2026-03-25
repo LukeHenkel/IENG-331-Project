@@ -1,6 +1,6 @@
 --Rank sellers by a composite score combining rev-enue, on-time delivery rate, average review score, and return/cancellation rate
 
-WITH seller_revenue AS(
+WITH seller_revenue AS (
 SELECT
 oi.seller_id,
 COUNT(DISTINCT oi.order_id) AS delivered_orders,
