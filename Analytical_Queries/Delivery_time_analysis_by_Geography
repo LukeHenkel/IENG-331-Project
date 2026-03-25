@@ -1,0 +1,15 @@
+-- Compare actual vs. estimated delivery times across customer regions, identifying which corridors consistently over- or under-deliver.
+
+WITH delivered_orders AS (
+SELECT
+    order_id,
+    customer_id,
+    order_purchase_timestamp,
+    order_delivered_customer_date,
+    order_estimated_customer_date
+FROM orders
+WHERE order_status = 'delivered'
+AND order_purchase_timestamp IS NOT NULL
+AND order_delivered_customer_date IS NOT NULL
+AND order_estimated_customer_date IS NOT NULL
+),
